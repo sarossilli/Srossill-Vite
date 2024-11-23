@@ -4,8 +4,7 @@ name: Run Tests
 on:
   pull_request:
     branches: [ main ]
-  push:
-    branches: [ dev ]
+    types: [opened, synchronize]
 
 jobs:
   test:
@@ -33,3 +32,6 @@ jobs:
       run: |
         echo "Tests failed - Please fix before merging"
         exit 1
+
+    - name: Run build
+      run: npm run build

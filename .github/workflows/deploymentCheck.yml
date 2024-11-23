@@ -1,0 +1,50 @@
+# .github/workflows/beta-deploy-check.yml
+name: Beta Deployment Check
+
+on:
+  pull_request:
+    branches: [ main ]
+    types: [opened, synchronize]
+
+jobs:
+  check-beta-deployment:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-east-1
+
+    - name: Check Amplify Deployment Status
+      run: |
+        MAX_ATTEMPTS=30
+        ATTEMPT=0
+        
+        while [ $ATTEMPT -lt $MAX_ATTEMPTS ]; do
+          # Get the latest job ID first
+          LATEST_JOB=$(aws amplify list-jobs --app-id ${{ secrets.AMPLIFY_APP_ID }} --branch-name dev --max-results 1 --query 'jobSummaries[0].jobId' --output text)
+          
+          echo "Latest Job ID: $LATEST_JOB"
+          
+          # Get status of the latest job
+          STATUS=$(aws amplify get-job --app-id ${{ secrets.AMPLIFY_APP_ID }} --branch-name dev --job-id $LATEST_JOB --query 'job.summary.status' --output text)
+          
+          echo "Deployment in progress... (Attempt $ATTEMPT of $MAX_ATTEMPTS)... Status: $STATUS"
+          
+          if [ "$STATUS" = "SUCCEED" ]; then
+            echo "Beta deployment successful!"
+            exit 0
+          elif [ "$STATUS" = "FAILED" ]; then
+            echo "Beta deployment failed!"
+            exit 1
+          fi
+          
+          ATTEMPT=$((ATTEMPT+1))
+          sleep 30
+        done
+        
+        echo "Timeout waiting for deployment"
+        exit 1
