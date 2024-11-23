@@ -5,11 +5,11 @@ const Header = () => {
   return (
     <header className="bg-gray-800 border-b border-gray-700">
       <nav className="container mx-auto px-4 py-4">
-      <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between">
           {/* Logo and Name */}
           <div className="flex items-center space-x-2">
-          <img src={icon} alt="Logo" className="w-8 h-8" />
-          <Link to="/" className="text-xl font-bold text-white">Sam Rossilli</Link>
+            <img src={icon} alt="Logo" className="w-8 h-8" />
+            <Link to="/" className="text-xl font-bold text-white" data-testid="logo">Sam Rossilli</Link>
           </div>
           {/* Navigation Links */}
           <div className="flex items-center space-x-6">
