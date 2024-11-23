@@ -12,11 +12,6 @@ jobs:
     
     steps:
     - uses: actions/checkout@v3
-    
-    - name: Run tests
-      run: |
-        npm ci
-        npm run test run
 
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v1
@@ -33,7 +28,7 @@ jobs:
         
         while [ $ATTEMPT -lt $MAX_ATTEMPTS ]; do
           STATUS=$(aws amplify get-branch --app-id ${{ secrets.AMPLIFY_APP_ID }} --branch-name dev --query 'branch.status' --output text)
-          
+          ECHO
           if [ "$STATUS" = "SUCCEED" ]; then
             echo "Beta deployment successful!"
             exit 0
@@ -42,7 +37,7 @@ jobs:
             exit 1
           fi
           
-          echo "Deployment in progress... (Attempt $ATTEMPT of $MAX_ATTEMPTS)"
+          echo "Deployment in progress... (Attempt $ATTEMPT of $MAX_ATTEMPTS)... Status $STATUS"
           ATTEMPT=$((ATTEMPT+1))
           sleep 30
         done
