@@ -28,7 +28,6 @@ jobs:
         
         while [ $ATTEMPT -lt $MAX_ATTEMPTS ]; do
           STATUS=$(aws amplify get-branch --app-id ${{ secrets.AMPLIFY_APP_ID }} --branch-name dev --query 'branch.status' --output text)
-          ECHO
           if [ "$STATUS" = "SUCCEED" ]; then
             echo "Beta deployment successful!"
             exit 0
