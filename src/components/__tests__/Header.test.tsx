@@ -13,7 +13,7 @@ const HeaderWithRouter = () => {
 
 describe('Header', () => {
   it('renders the logo and name', () => {
-    const { container } = render(<HeaderWithRouter />)
+    render(<HeaderWithRouter />)
     
     // Check if Sam Rossilli text is present
     expect(screen.getByText('Sam Rossilli')).toBeInTheDocument()
