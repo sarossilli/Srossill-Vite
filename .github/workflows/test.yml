@@ -22,17 +22,14 @@ jobs:
         
     - name: Install dependencies
       run: npm ci
-      
+        
     - name: Run tests
       run: npm run test run
+      # This will fail the workflow if tests fail
 
-    # Optional: Add status check
-    - name: Report Status
-      if: always()
-      uses: actions/github-script@v6
-      with:
-        script: |
-          const { conclusion } = context.payload.check_run;
-          if (conclusion === 'failure') {
-            core.setFailed('Tests must pass before merging');
-          }
+    # Optional: Add status check in a simpler way
+    - name: Check Test Status
+      if: ${{ failure() }}
+      run: |
+        echo "Tests failed - Please fix before merging"
+        exit 1
