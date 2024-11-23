@@ -1,0 +1,51 @@
+# .github/workflows/beta-deploy-check.yml
+name: Beta Deployment Check
+
+on:
+  pull_request:
+    branches: [ main ]
+    types: [opened, synchronize]
+
+jobs:
+  check-beta-deployment:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Run tests
+      run: |
+        npm ci
+        npm run test run
+
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-east-1 
+
+    - name: Check Amplify Deployment Status
+      run: |
+        # Wait for deployment to complete and check status
+        MAX_ATTEMPTS=30
+        ATTEMPT=0
+        
+        while [ $ATTEMPT -lt $MAX_ATTEMPTS ]; do
+          STATUS=$(aws amplify get-branch --app-id ${{ secrets.AMPLIFY_APP_ID }} --branch-name dev --query 'branch.status' --output text)
+          
+          if [ "$STATUS" = "SUCCEED" ]; then
+            echo "Beta deployment successful!"
+            exit 0
+          elif [ "$STATUS" = "FAILED" ]; then
+            echo "Beta deployment failed!"
+            exit 1
+          fi
+          
+          echo "Deployment in progress... (Attempt $ATTEMPT of $MAX_ATTEMPTS)"
+          ATTEMPT=$((ATTEMPT+1))
+          sleep 30
+        done
+        
+        echo "Timeout waiting for deployment"
+        exit 1
