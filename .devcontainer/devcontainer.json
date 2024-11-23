@@ -24,5 +24,13 @@
     // ... rest of your config
 
 	"forwardPorts": [5173],
-	"appPort": [5173]
+	"appPort": [
+		5173
+	],
+	"features": {
+		"ghcr.io/devcontainers/features/aws-cli:1": {}
+	},
+	"containerEnv": {
+		"AWS_PROFILE": "default"
+	  }
 }
