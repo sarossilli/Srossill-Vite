@@ -4,12 +4,8 @@ import Footer from './components/Footer';
 import Home from './pages/Home';
 import About from './pages/About';
 import { AdminPage } from './pages/Admin';
-import config from '../amplify_outputs.json';
-import { Amplify } from 'aws-amplify';
 import NewPostPage from './pages/NewPostPage';
 import BlogPage from './pages/BlogPage';
-
-Amplify.configure(config);
 
 function App() {
   return (
