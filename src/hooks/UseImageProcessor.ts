@@ -4,8 +4,8 @@ import { getUrl } from 'aws-amplify/storage';
 import type { TipTapContent } from '../types/Editor';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function useImageProcessor(initialContent: any) {
-  const [processedContent, setProcessedContent] = useState<TipTapContent | null>(initialContent);
+export function useImageProcessor(initialContent?: TipTapContent) {
+  const [processedContent, setProcessedContent] = useState<TipTapContent>();
 
   useEffect(() => {
     async function processImages() {

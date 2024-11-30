@@ -226,7 +226,6 @@ export default function NewPostPage() {
         <div className="prose-lg">
           <RichTextEditor
             onChange={(content) => handleFormChange('content', content)}
-            initialContent=""
           />
         </div>
       </div>
