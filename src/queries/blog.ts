@@ -1,4 +1,3 @@
-// src/queries/blog.ts
 import { generateClient } from 'aws-amplify/api';
 import type { Schema } from '../../amplify/data/resource';
 import type { Post } from '../types/BlogPost';
@@ -7,7 +6,6 @@ import { TipTapContent } from '../types/Editor';
 
 const client = generateClient<Schema>();
 
-// Public queries (using identity pool)
 export async function fetchPublishedPosts(): Promise<Post[]> {
     const result = await client.models.BlogPost.list({
         filter: {
@@ -21,7 +19,6 @@ export async function fetchPublishedPosts(): Promise<Post[]> {
     return result.data as Post[];
 }
 
-// Admin queries (using user pool)
 export async function fetchAllPosts(): Promise<Post[]> {
     const result = await client.models.BlogPost.list();
     if (!result.data) {
@@ -37,7 +34,7 @@ export async function deletePost(id: string): Promise<void> {
 export interface ProcessedPost {
     post: Post;
     featuredImageUrl: string | null;
-    processedContent: TipTapContent; // Replace with TipTapContent type if you have it
+    processedContent: TipTapContent;
 }
 
 export async function fetchPostById(id: string): Promise<ProcessedPost> {
@@ -48,11 +45,15 @@ export async function fetchPostById(id: string): Promise<ProcessedPost> {
 
     let featuredImageUrl = null;
     if (post.featuredImage) {
-        const imageResult = await getUrl({ path: post.featuredImage });
+        const imageResult = await getUrl({
+            path: post.featuredImage,
+            options: {
+                expiresIn: 3600
+            }
+        });
         featuredImageUrl = imageResult.url.toString();
     }
 
-    // Process content (assuming it's stored as string)
     const processedContent = typeof post.content === 'string'
         ? JSON.parse(post.content)
         : post.content;

@@ -1,11 +1,10 @@
-// src/hooks/useImageProcessor.ts
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useEffect } from 'react';
 import { getUrl } from 'aws-amplify/storage';
 import type { TipTapContent } from '../types/Editor';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function useImageProcessor(initialContent?: TipTapContent) {
-  const [processedContent, setProcessedContent] = useState<TipTapContent>();
+export function useImageProcessor(initialContent: any) {
+  const [processedContent, setProcessedContent] = useState<TipTapContent | null>(initialContent);
 
   useEffect(() => {
     async function processImages() {
@@ -22,11 +21,20 @@ export function useImageProcessor(initialContent?: TipTapContent) {
       }
 
       if (content.content) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const processNode = async (node: any) => {
           if (node.type === 'image' && node.attrs?.['data-storage-key']) {
-            const result = await getUrl({ path: `${node.attrs['data-storage-key']}` });
-            node.attrs.src = result.url.toString();
+            try {
+              // Always fetch a fresh URL
+              const result = await getUrl({ 
+                path: node.attrs['data-storage-key'],
+                options: {
+                  expiresIn: 3600 // 1 hour
+                }
+              });
+              node.attrs.src = result.url.toString();
+            } catch (error) {
+              console.error('Failed to get image URL:', error);
+            }
           }
           if (node.content) {
             for (const childNode of node.content) {
