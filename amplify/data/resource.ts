@@ -6,11 +6,13 @@ const schema = a.schema({
       title: a.string().required(),
       content: a.json().required(),
       status: a.enum(['DRAFT', 'PUBLISHED']),
+      type: a.enum(['BLOG','PROJECT']),
       featuredImage: a.string(),
       publishedAt: a.datetime(),
     })
     .authorization((allow) => [
-      allow.guest().to(['read'])
+      allow.guest().to(['read']),
+      allow.authenticated().to(['read','create','delete','update'])
     ]),
 });
 

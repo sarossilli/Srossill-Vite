@@ -1,14 +1,21 @@
-import { Nullable } from "vitest";
-
-/* eslint-disable @typescript-eslint/no-explicit-any */
-export type BlogPost = {
+import { TipTapContent } from "./Editor";
+export interface Post {
+    id: string;
     title: string;
-    content: string | number | boolean | object | any[];
-    status: "DRAFT" | "PUBLISHED" | null;
-    featuredImage: Nullable<string>;
-    publishedAt: Nullable<string>;
-    readonly id: string;
-    owner: string | null;
-    readonly createdAt: string;
-    readonly updatedAt: string;
-};
+    content: string | TipTapContent;
+    status: 'DRAFT' | 'PUBLISHED';
+    type: 'BLOG' | 'PROJECT';
+    featuredImage: string | null;
+    publishedAt: string | null;
+    updatedAt: string;
+}
+
+export interface UpdatePostData {
+    id: string;
+    title: string;
+    content: string;
+    status: 'DRAFT' | 'PUBLISHED';
+    type: 'BLOG' | 'PROJECT';
+    featuredImage: string | null;
+    publishedAt?: string;
+}
