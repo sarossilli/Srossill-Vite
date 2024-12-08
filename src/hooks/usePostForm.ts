@@ -12,7 +12,7 @@ export function usePostForm(id: string | undefined) {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { uploadFeaturedImage } = usePostUpload();
-  
+
   const [formData, setFormData] = useState<FormData>({
     title: '',
     content: null,
@@ -29,13 +29,27 @@ export function usePostForm(id: string | undefined) {
 
   useEffect(() => {
     if (postData) {
-
       console.log('Raw post content:', postData.post.content);
       console.log('Processed content:', postData.processedContent);
-      
+
+      let parsedContent = null;
+      if (postData.processedContent) {
+        parsedContent = postData.processedContent;
+      } else if (typeof postData.post.content === 'string') {
+        try {
+          parsedContent = JSON.parse(postData.post.content);
+        } catch (e) {
+          console.error('Failed to parse content:', e);
+        }
+      } else {
+        parsedContent = postData.post.content;
+      }
+
+      console.log('Final parsed content:', parsedContent);
+
       setFormData({
         title: postData.post.title,
-        content: postData.processedContent || null,
+        content: parsedContent,
         status: postData.post.status || 'DRAFT',
         type: postData.post.type || 'BLOG',
         featuredImage: null,

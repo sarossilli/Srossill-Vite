@@ -1,15 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from 'react';
-import { generateClient } from 'aws-amplify/api';
 import { uploadData } from 'aws-amplify/storage';
 import { getCurrentUser } from 'aws-amplify/auth';
 import { useNavigate } from 'react-router-dom';
 import RichTextEditor from '../components/RichTextEditor';
-import type { Schema } from '../../amplify/data/resource';
 import toast from 'react-hot-toast';
-import { FormData } from '../types/FormData'
-
-const client = generateClient<Schema>();
+import { FormData } from '../types/FormData';
+import { createPost } from '../queries/blog';
 
 export default function NewPostPage() {
   const navigate = useNavigate();
@@ -83,22 +80,16 @@ export default function NewPostPage() {
         imageUrl = key;
       }
 
-      const currentDate = new Date().toISOString();
-
       const postData = {
         title: formData.title.trim(),
         content: JSON.stringify(formData.content),
         status: formData.status,
         type: formData.type,
         featuredImage: imageUrl || null,
-        publishedAt: formData.status === 'PUBLISHED' ? currentDate : null,
+        publishedAt: formData.status === 'PUBLISHED' ? new Date().toISOString() : null,
       };
 
-      const result = await client.models.BlogPost.create(postData);
-
-      if (result.errors?.length) {
-        throw new Error(result.errors[0].message);
-      }
+      await createPost(postData);
 
       toast.success('Post saved successfully!', { id: toastId });
       navigate('/admin');

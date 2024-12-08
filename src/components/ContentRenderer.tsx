@@ -1,45 +1,28 @@
-import { useEditor, EditorContent } from '@tiptap/react';
-import StarterKit from '@tiptap/starter-kit';
-import Image from '@tiptap/extension-image';
-import Link from '@tiptap/extension-link';
-import TextAlign from '@tiptap/extension-text-align';
-import type { TipTapContent } from '../types/Editor';
+import { useEditor, EditorContent, EditorOptions } from '@tiptap/react'
+import { baseEditorConfig } from './RichTextEditor/EditorConfig'
+import { useMemo } from 'react'
+import { JSONContent } from '@tiptap/react'
 
 interface ContentRendererProps {
-  content: TipTapContent;
+  content: JSONContent;
 }
 
 export function ContentRenderer({ content }: ContentRendererProps) {
-  const editor = useEditor({
-    extensions: [
-      StarterKit,
-      Image.configure({
-        HTMLAttributes: {
-          class: 'rounded-lg max-w-full',
-        },
-      }),
-      Link.configure({
-        openOnClick: true,
-        HTMLAttributes: {
-          class: 'text-blue-400 hover:text-blue-300 underline',
-        },
-      }),
-      TextAlign.configure({
-        types: ['heading', 'paragraph'],
-      }),
-    ],
+  const config = useMemo((): Partial<EditorOptions> => ({
+    ...baseEditorConfig,
     content,
     editable: false,
-    editorProps: {
-      attributes: {
-        class: 'prose prose-invert max-w-none',
-      },
-    },
-  });
+  }), [content]);
+
+  const editor = useEditor(config);
 
   if (!editor) {
     return null;
   }
 
-  return <EditorContent editor={editor} />;
+  return (
+    <div className="prose-custom bg-gray-900 rounded-lg p-6">
+      <EditorContent editor={editor} />
+    </div>
+  );
 }
