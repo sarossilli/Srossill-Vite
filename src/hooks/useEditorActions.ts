@@ -1,7 +1,6 @@
 // src/hooks/useEditorActions.ts
 import { Editor } from '@tiptap/react';
 import { useImageUpload } from './useImageUpload';
-import { getUrl } from 'aws-amplify/storage';
 
 export function useEditorActions(editor: Editor) {
   const { uploadImage } = useImageUpload();
@@ -9,9 +8,8 @@ export function useEditorActions(editor: Editor) {
   const handleImageUpload = async (file: File) => {
     try {
       const key = await uploadImage(file);
-      const result = await getUrl({ path: key });
       editor.chain().focus().setImage({ 
-        src: result.url.toString(),
+        src: key,
       }).run();
     } catch (error) {
       console.error('Failed to upload image:', error);

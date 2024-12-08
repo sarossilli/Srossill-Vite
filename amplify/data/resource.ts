@@ -21,6 +21,6 @@ export type Schema = ClientSchema<typeof schema>;
 export const data = defineData({
   schema,
   authorizationModes: {
-    defaultAuthorizationMode: 'userPool', // Use Cognito User Pool
+    defaultAuthorizationMode: 'identityPool', // Use Cognito User Pool
   },
 });

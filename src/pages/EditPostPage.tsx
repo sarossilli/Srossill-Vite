@@ -1,23 +1,108 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // src/pages/EditPostPage.tsx
 import { useParams, useNavigate } from 'react-router-dom';
-import { usePostForm } from '../hooks/usePostForm';
-import { usePostUpload } from '../hooks/usePostUpload';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { fetchPostById, updatePost } from '../queries/blog';
+import { useState, useEffect } from 'react';
 import RichTextEditor from '../components/RichTextEditor';
 import { StorageImage } from '@aws-amplify/ui-react-storage';
 import { Loader2 } from 'lucide-react';
+import type { FormData } from '../types/FormData';
+import toast from 'react-hot-toast';
+import { usePostUpload } from '../hooks/usePostUpload';
+import { uploadData } from 'aws-amplify/storage';
 
 export default function EditPostPage() {
     const { id } = useParams();
     const navigate = useNavigate();
+    const queryClient = useQueryClient();
     const { handleImageChange } = usePostUpload();
-    const {
-        formData,
-        isLoading,
-        isSaving,
-        postData,
-        handleFormChange,
-        handleSave
-    } = usePostForm(id);
+
+    const { data: postData, isLoading } = useQuery({
+        queryKey: ['post', id],
+        queryFn: () => id ? fetchPostById(id) : null,
+        enabled: !!id
+    });
+
+    const [formData, setFormData] = useState<FormData>({
+        title: '',
+        content: null,
+        status: 'DRAFT',
+        type: 'BLOG',
+        featuredImage: null,
+    });
+
+    useEffect(() => {
+        if (postData?.post) {
+            let parsedContent = postData.post.content;
+            if (typeof parsedContent === 'string') {
+                try {
+                    parsedContent = JSON.parse(parsedContent);
+                } catch (e) {
+                    console.error('Failed to parse content:', e);
+                }
+            }
+
+            console.log('Setting initial content:', parsedContent);
+
+            setFormData({
+                title: postData.post.title,
+                content: parsedContent, // Use the parsed content directly
+                status: postData.post.status || 'DRAFT',
+                type: postData.post.type || 'BLOG',
+                featuredImage: null,
+            });
+        }
+    }, [postData]);
+
+    const mutation = useMutation({
+        mutationFn: async () => {
+            if (!id) throw new Error('No post ID provided');
+            if (!formData.content) throw new Error('No content provided');
+
+            let imageUrl = postData?.post.featuredImage;
+            if (formData.featuredImage) {
+                const uniqueId = Date.now().toString();
+                const fileName = formData.featuredImage.name.replace(/[^a-zA-Z0-9.]/g, '-');
+                imageUrl = `images/${uniqueId}-${fileName}`;
+
+                // Upload the image directly using uploadData
+                await uploadData({
+                    path: imageUrl,
+                    data: formData.featuredImage,
+                    options: {
+                        contentType: formData.featuredImage.type,
+                    }
+                });
+            }
+
+            return updatePost({
+                id,
+                title: formData.title,
+                content: JSON.stringify(formData.content),
+                status: formData.status,
+                type: formData.type,
+                featuredImage: imageUrl,
+                ...(formData.status === 'PUBLISHED' && !postData?.post.publishedAt
+                    ? { publishedAt: new Date().toISOString() }
+                    : {})
+            });
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['post', id] });
+            queryClient.invalidateQueries({ queryKey: ['posts'] });
+            toast.success('Post updated successfully!');
+            navigate('/admin');
+        },
+        onError: (error) => {
+            toast.error(error instanceof Error ? error.message : 'Failed to update post');
+        }
+    });
+
+    // Form change handler
+    const handleFormChange = (field: keyof FormData, value: any) => {
+        setFormData(prev => ({ ...prev, [field]: value }));
+    };
 
     if (isLoading) {
         return (
@@ -40,7 +125,7 @@ export default function EditPostPage() {
                     <div className="flex gap-4">
                         <select
                             value={formData.type}
-                            onChange={(e) => handleFormChange('type', e.target.value as 'BLOG' | 'PROJECT')}
+                            onChange={(e) => handleFormChange('type', e.target.value)}
                             className="bg-gray-800 text-white border border-gray-700 rounded-md px-3 py-2 outline-none focus:ring-2 focus:ring-blue-500"
                         >
                             <option value="BLOG">Blog Post</option>
@@ -49,7 +134,7 @@ export default function EditPostPage() {
 
                         <select
                             value={formData.status}
-                            onChange={(e) => handleFormChange('status', e.target.value as 'DRAFT' | 'PUBLISHED')}
+                            onChange={(e) => handleFormChange('status', e.target.value)}
                             className="bg-gray-800 text-white border border-gray-700 rounded-md px-3 py-2 outline-none focus:ring-2 focus:ring-blue-500"
                         >
                             <option value="DRAFT">Draft</option>
@@ -63,11 +148,11 @@ export default function EditPostPage() {
                             Cancel
                         </button>
                         <button
-                            onClick={handleSave}
-                            disabled={isSaving || !formData.title || !formData.content}
+                            onClick={() => mutation.mutate()}
+                            disabled={mutation.isPending || !formData.title || !formData.content}
                             className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors duration-200 disabled:bg-gray-700 disabled:text-gray-400 disabled:cursor-not-allowed"
                         >
-                            {isSaving ? 'Saving...' : 'Save Changes'}
+                            {mutation.isPending ? 'Saving...' : 'Save Changes'}
                         </button>
                     </div>
                 </div>
@@ -76,7 +161,7 @@ export default function EditPostPage() {
                     type="text"
                     value={formData.title}
                     onChange={(e) => handleFormChange('title', e.target.value)}
-                    placeholder={`${formData.type === 'BLOG' ? 'Blog post' : 'Project'} title`}
+                    placeholder="Post title"
                     className="w-full p-3 text-2xl font-bold bg-gray-800 text-white border border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none placeholder-gray-500"
                 />
 
@@ -87,7 +172,7 @@ export default function EditPostPage() {
                     <input
                         type="file"
                         accept="image/*"
-                        onChange={(e) => handleImageChange(e.target.files?.[0] || null, 
+                        onChange={(e) => handleImageChange(e.target.files?.[0] || null,
                             (file) => handleFormChange('featuredImage', file))}
                         className="block w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-600 file:text-white hover:file:bg-blue-700"
                     />

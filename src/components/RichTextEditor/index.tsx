@@ -1,51 +1,43 @@
-import { useEditor, EditorContent, BubbleMenu } from '@tiptap/react';
-import { useEditorConfig } from '../../hooks/useEditorConfig';
-import { EditorToolbar } from './EditorToolbar';
-import { useImageProcessor } from '../../hooks/UseImageProcessor';
-import { TipTapContent } from '../../types/Editor';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+// src/components/RichTextEditor/index.tsx
+import { useEditor, EditorContent, Editor, EditorOptions } from '@tiptap/react'
+import { EditorToolbar } from './EditorToolbar'
+import { baseEditorConfig } from './EditorConfig'
+import { useEffect, useMemo } from 'react'
+import { JSONContent } from '@tiptap/react'
 
 interface RichTextEditorProps {
-  onChange: (content: TipTapContent) => void;
-  initialContent?: TipTapContent;
+    onChange?: (content: JSONContent) => void;
+    initialContent?: JSONContent;
 }
 
 export default function RichTextEditor({ onChange, initialContent }: RichTextEditorProps) {
-  const processedContent = useImageProcessor(initialContent);
-  const editorConfig = useEditorConfig(onChange, processedContent);
-  const editor = useEditor(editorConfig);
+    const config = useMemo((): Partial<EditorOptions> => ({
+        ...baseEditorConfig,
+        content: initialContent,
+        onUpdate: ({ editor }: { editor: Editor }) => {
+            onChange?.(editor.getJSON());
+        }
+    }), [initialContent, onChange]);
 
-  if (!editor) return null;
+    const editor = useEditor(config);
 
-  return (
-    <div className="border border-gray-700 rounded-lg overflow-hidden bg-gray-800 relative">
-      {editor && (
-        <BubbleMenu editor={editor} tippyOptions={{ duration: 100 }}>
-          <div className="bg-gray-900 rounded-lg shadow-lg border border-gray-700 flex">
-            <button
-              onClick={() => editor.chain().focus().toggleBold().run()}
-              className={`p-2 text-gray-300 hover:text-white ${
-                editor.isActive('bold') ? 'bg-gray-700' : ''
-              }`}
-            >
-              B
-            </button>
-            <button
-              onClick={() => editor.chain().focus().toggleItalic().run()}
-              className={`p-2 text-gray-300 hover:text-white ${
-                editor.isActive('italic') ? 'bg-gray-700' : ''
-              }`}
-            >
-              I
-            </button>
-          </div>
-        </BubbleMenu>
-      )}
+    useEffect(() => {
+        if (editor && initialContent) {
+            queueMicrotask(() => {
+                editor.commands.setContent(initialContent);
+            });
+        }
+    }, [editor, initialContent]);
 
-      <EditorToolbar editor={editor} />
+    if (!editor) {
+        return null;
+    }
 
-      <div className="p-4 bg-gray-800">
-        <EditorContent editor={editor} />
-      </div>
-    </div>
-  );
+    return (
+        <div className="border border-gray-700 rounded-lg overflow-hidden">
+            <EditorToolbar editor={editor} />
+            <EditorContent editor={editor} />
+        </div>
+    );
 }
