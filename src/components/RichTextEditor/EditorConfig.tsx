@@ -29,10 +29,7 @@ export const extensions = [
     heading: {
       levels: [1, 2, 3],
       HTMLAttributes: {
-        class: 'font-bold',
-        1: { class: 'text-3xl mt-8 mb-4' },
-        2: { class: 'text-2xl mt-6 mb-3' },
-        3: { class: 'text-xl mt-4 mb-2' },
+        class: 'font-bold'
       }
     },
     blockquote: {
