@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import type { JSONContent } from '@tiptap/react'
+
 export interface ImageAttrs {
     src: string;
     alt?: string | null;
@@ -16,11 +19,29 @@ export interface Node {
     text?: string;
 }
 
-export interface TipTapContent {
-    type: 'doc';
-    content: Node[];
+export interface TipTapContent extends JSONContent {
+  type: 'doc';
+  content?: Array<{
+    type: string;
+    attrs?: Record<string, any>;
+    content?: Array<{
+      type: string;
+      attrs?: Record<string, any>;
+      text?: string;
+      marks?: Array<{
+        type: string;
+        attrs?: Record<string, any>;
+      }>;
+    }>;
+    marks?: Array<{
+      type: string;
+      attrs?: Record<string, any>;
+    }>;
+  }>;
 }
 
+// More flexible alternative if you need it
+export type FlexibleTipTapContent = JSONContent;
 // Optional - you can define more specific node types if needed
 export interface ImageNode {
     type: 'image';
