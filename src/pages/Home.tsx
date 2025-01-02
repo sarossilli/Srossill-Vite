@@ -1,4 +1,3 @@
-// src/pages/Home.tsx
 import React from 'react';
 import { ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -7,20 +6,31 @@ const Home: React.FC = () => {
   return (
     <div className="max-w-4xl mx-auto px-4 py-16">
       {/* Hero Section */}
-      <div className="mb-16 text-center">
-        <h1 className="text-5xl font-bold mb-6 text-white">Hey, I'm Sam 👋</h1>
-        <p className="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
-          Im a Fullstack engineer currently at Amazon. I find the most rewarding part of my job is making 300,000 delivery drivers' days
-          just a little bit better.
-        </p>
-        <Link
-          to="/about"
-          className="inline-flex items-center gap-2 bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
-        >
-          Read More About My Work <ArrowRight size={20} />
-        </Link>
+      <div className="mb-16">
+        <div className="flex flex-col items-center mb-8">
+          {/* Profile Image Container */}
+          <div className="w-40 h-40 mb-6 rounded-full overflow-hidden border-4 border-blue-600 shadow-lg">
+            <img
+              src="/profile.jpg"
+              alt="Sam Rossill"
+              className="w-full h-full object-cover"
+            />
+          </div>
+          <h1 className="text-5xl font-bold mb-6 text-white text-center">Hey, I'm Sam 👋</h1>
+          <p className="text-xl text-gray-300 mb-8 max-w-2xl text-center">
+            I'm a Fullstack engineer currently at Amazon. I find the most rewarding part of my job is making 300,000 delivery drivers' days
+            just a little bit better.
+          </p>
+          <Link
+            to="/about"
+            className="inline-flex items-center gap-2 bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+          >
+            Read More About My Work <ArrowRight size={20} />
+          </Link>
+        </div>
       </div>
-      {/* Tools & Technologies */}
+
+      {/* Rest of the content remains the same */}
       <div className="mb-16">
         <h2 className="text-2xl font-bold mb-6 text-white">Tools I Love Working With</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
