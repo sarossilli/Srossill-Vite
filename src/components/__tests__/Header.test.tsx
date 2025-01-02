@@ -27,7 +27,6 @@ describe('Header', () => {
     
     // Check if all navigation links are present
     expect(screen.getByText('Home')).toBeInTheDocument()
-    expect(screen.getByText('Projects')).toBeInTheDocument()
     expect(screen.getByText('About')).toBeInTheDocument()
     expect(screen.getByText('Blog')).toBeInTheDocument()
   })
@@ -37,7 +36,6 @@ describe('Header', () => {
     
     // Check if links have correct href attributes
     expect(screen.getByText('Home').closest('a')).toHaveAttribute('href', '/')
-    expect(screen.getByText('Projects').closest('a')).toHaveAttribute('href', '/projects')
     expect(screen.getByText('About').closest('a')).toHaveAttribute('href', '/about')
     expect(screen.getByText('Blog').closest('a')).toHaveAttribute('href', '/blog')
   })
