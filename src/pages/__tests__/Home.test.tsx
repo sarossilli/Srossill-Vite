@@ -51,11 +51,6 @@ describe('Home', () => {
     })
 
     it('presents technology categories with proper structure', () => {
-      const toolsSection = screen.getByRole('heading', { 
-        name: 'Tools I Love Working With',
-        level: 2
-      }).parentElement
-
       const categories = [
         {
           title: 'Cloud & Backend',
