@@ -101,7 +101,7 @@ const Home: React.FC = () => {
       {/* Call to Action */}
       <div className="text-center">
         <Link
-          to="/projects"
+          to="/blog"
           className="inline-flex items-center gap-2 bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 transition-colors"
         >
           See more of my work <ArrowRight size={20} />

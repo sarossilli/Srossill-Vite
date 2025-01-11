@@ -37,7 +37,6 @@ function App() {
               <Route path="/blog" element={<BlogPage />} />
               <Route path="/about" element={<About />} />
               <Route path="/blog/:id" element={<PostPage />} />
-              <Route path="/project/:id" element={<PostPage />} />
               <Route
                 path="/admin/newPost"
                 element={

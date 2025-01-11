@@ -3,7 +3,7 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { fetchPostById, updatePost } from '../queries/blog';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import RichTextEditor from '../components/RichTextEditor';
 import { StorageImage } from '@aws-amplify/ui-react-storage';
 import { Loader2 } from 'lucide-react';
@@ -17,6 +17,7 @@ export default function EditPostPage() {
     const navigate = useNavigate();
     const queryClient = useQueryClient();
     const { handleImageChange } = usePostUpload();
+    const initialLoadDone = useRef(false);
 
     const { data: postData, isLoading } = useQuery({
         queryKey: ['post', id],
@@ -33,7 +34,7 @@ export default function EditPostPage() {
     });
 
     useEffect(() => {
-        if (postData?.post) {
+        if (postData?.post && !initialLoadDone.current) {
             let parsedContent = postData.post.content;
             if (typeof parsedContent === 'string') {
                 try {
@@ -42,16 +43,15 @@ export default function EditPostPage() {
                     console.error('Failed to parse content:', e);
                 }
             }
-
-            console.log('Setting initial content:', parsedContent);
-
             setFormData({
                 title: postData.post.title,
-                content: parsedContent, // Use the parsed content directly
+                content: parsedContent,
                 status: postData.post.status || 'DRAFT',
                 type: postData.post.type || 'BLOG',
                 featuredImage: null,
             });
+            
+            initialLoadDone.current = true;
         }
     }, [postData]);
 

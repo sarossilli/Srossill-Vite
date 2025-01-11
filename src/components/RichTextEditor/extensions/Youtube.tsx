@@ -1,6 +1,5 @@
 import { mergeAttributes, Node } from '@tiptap/core'
 import { ReactNodeViewRenderer, NodeViewProps, NodeViewWrapper } from '@tiptap/react'
-import React from 'react'
 
 interface YoutubeOptions {
   addPasteHandler: boolean
