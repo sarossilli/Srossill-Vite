@@ -1,4 +1,3 @@
-// src/components/RichTextEditor/EditorConfig.tsx
 import { EditorOptions, NodeViewWrapper, ReactNodeViewRenderer } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit'
 import Image from '@tiptap/extension-image'
@@ -13,8 +12,8 @@ import Link from '@tiptap/extension-link'
 import TextAlign from '@tiptap/extension-text-align'
 import TaskList from '@tiptap/extension-task-list'
 import TaskItem from '@tiptap/extension-task-item'
+import { Youtube } from './extensions/Youtube';
 
-// Style the image wrapper
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const ImageNodeView = ({ node }: { node: any }) => {
   return (
@@ -25,6 +24,12 @@ const ImageNodeView = ({ node }: { node: any }) => {
 };
 
 export const extensions = [
+  Youtube.configure({
+    addPasteHandler: true, // Enables automatic conversion of pasted YouTube URLs
+    HTMLAttributes: {
+      class: 'youtube-wrapper',
+    },
+  }),
   StarterKit.configure({
     heading: {
       levels: [1, 2, 3],

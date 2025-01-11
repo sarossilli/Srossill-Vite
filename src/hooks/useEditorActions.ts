@@ -8,7 +8,7 @@ export function useEditorActions(editor: Editor) {
   const handleImageUpload = async (file: File) => {
     try {
       const key = await uploadImage(file);
-      editor.chain().focus().setImage({ 
+      editor.chain().focus().setImage({
         src: key,
       }).run();
     } catch (error) {
@@ -16,6 +16,13 @@ export function useEditorActions(editor: Editor) {
       throw error;
     }
   };
+
+  const insertYouTube = () => {
+    const url = window.prompt('Enter YouTube URL')
+    if (url) {
+      editor.commands.setYoutube({ src: url })
+    }
+  }
 
   const handleFileSelect = () => {
     const input = document.createElement('input');
@@ -44,6 +51,7 @@ export function useEditorActions(editor: Editor) {
   return {
     handleFileSelect,
     addLink,
-    addTable
+    addTable,
+    insertYouTube
   };
 }
