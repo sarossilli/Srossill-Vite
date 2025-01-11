@@ -1,7 +1,7 @@
 import { useEditor, EditorContent, Editor, EditorOptions } from '@tiptap/react';
 import { EditorToolbar } from './EditorToolbar';
 import { baseEditorConfig } from './EditorConfig';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { JSONContent } from '@tiptap/react';
 
 interface RichTextEditorProps {
@@ -10,47 +10,33 @@ interface RichTextEditorProps {
 }
 
 export default function RichTextEditor({ onChange, initialContent }: RichTextEditorProps) {
-  const [isReady, setIsReady] = useState(false);
+  const hasInitialized = useRef(false);
 
   const config = useMemo((): Partial<EditorOptions> => ({
     ...baseEditorConfig,
-    // Start with empty content
-    content: '',
+    content: '',  // Start empty
     onUpdate: ({ editor }: { editor: Editor }) => {
-      onChange?.(editor.getJSON());
+      if (hasInitialized.current) {
+        onChange?.(editor.getJSON());
+      }
     },
-  }), [onChange]); // Remove initialContent from deps
+  }), [onChange]);
 
   const editor = useEditor(config);
 
-  // Handle initial content setup
+  // Handle initial content and updates
   useEffect(() => {
-    if (editor && initialContent && !isReady) {
-      // Push content update to next tick
-      queueMicrotask(() => {
-        editor.commands.setContent(initialContent);
-        setIsReady(true);
-      });
+    if (editor && initialContent && !hasInitialized.current) {
+      editor.commands.setContent(initialContent);
+      hasInitialized.current = true;
     }
-  }, [editor, initialContent, isReady]);
+  }, [editor, initialContent]);
 
-  // Handle subsequent content updates
-  useEffect(() => {
-    if (editor && initialContent && isReady) {
-      const currentContent = editor.getJSON();
-      if (JSON.stringify(currentContent) !== JSON.stringify(initialContent)) {
-        queueMicrotask(() => {
-          editor.commands.setContent(initialContent);
-        });
-      }
-    }
-  }, [editor, initialContent, isReady]);
-
-  if (!editor || !isReady) {
+  if (!editor) {
     return (
       <div className="border border-gray-700 rounded-lg overflow-hidden">
-        <div className="h-12 bg-gray-800" /> {/* Toolbar placeholder */}
-        <div className="animate-pulse h-64 bg-gray-800" /> {/* Content placeholder */}
+        <div className="h-12 bg-gray-800" />
+        <div className="animate-pulse h-64 bg-gray-800" />
       </div>
     );
   }
@@ -58,10 +44,7 @@ export default function RichTextEditor({ onChange, initialContent }: RichTextEdi
   return (
     <div className="border border-gray-700 rounded-lg overflow-hidden">
       <EditorToolbar editor={editor} />
-      <EditorContent
-        editor={editor}
-        className="prose prose-invert max-w-none"
-      />
+      <EditorContent editor={editor} className="prose prose-invert max-w-none" />
     </div>
   );
 }

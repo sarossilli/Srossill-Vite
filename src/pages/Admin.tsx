@@ -155,7 +155,7 @@ export function AdminPage() {
                                 <PenSquare size={20} />
                               </Link>
                               <Link
-                                to={`/${post.type.toLowerCase()}/${post.id}`}
+                                to={`/blog/${post.id}`}
                                 className="text-green-400 hover:text-green-300"
                                 title="View"
                               >

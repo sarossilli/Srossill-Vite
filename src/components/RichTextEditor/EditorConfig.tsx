@@ -42,11 +42,6 @@ export const extensions = [
         class: 'border-l-4 border-gray-300 pl-4 italic my-4 text-gray-300',
       }
     },
-    code: {
-      HTMLAttributes: {
-        class: 'bg-gray-800 rounded px-1 py-0.5 font-mono text-sm',
-      }
-    },
     horizontalRule: {
       HTMLAttributes: {
         class: 'my-8 border-t border-gray-700',

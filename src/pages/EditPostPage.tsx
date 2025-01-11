@@ -11,6 +11,7 @@ import type { FormData } from '../types/FormData';
 import toast from 'react-hot-toast';
 import { usePostUpload } from '../hooks/usePostUpload';
 import { uploadData } from 'aws-amplify/storage';
+import { JSONContent } from '@tiptap/react';
 
 export default function EditPostPage() {
     const { id } = useParams();
@@ -35,21 +36,30 @@ export default function EditPostPage() {
 
     useEffect(() => {
         if (postData?.post && !initialLoadDone.current) {
-            let parsedContent = postData.post.content;
-            if (typeof parsedContent === 'string') {
+            let parsedContent: JSONContent = {
+                type: 'doc',
+                content: []
+            };
+    
+            const rawContent = postData.post.content;
+            if (typeof rawContent === 'string') {
                 try {
-                    parsedContent = JSON.parse(parsedContent);
+                    parsedContent = JSON.parse(rawContent) as JSONContent;
                 } catch (e) {
                     console.error('Failed to parse content:', e);
                 }
+            } else if (rawContent) {
+                parsedContent = rawContent;
             }
-            setFormData({
+            
+            setFormData(prev => ({
+                ...prev,
                 title: postData.post.title,
                 content: parsedContent,
                 status: postData.post.status || 'DRAFT',
                 type: postData.post.type || 'BLOG',
                 featuredImage: null,
-            });
+            }));
             
             initialLoadDone.current = true;
         }

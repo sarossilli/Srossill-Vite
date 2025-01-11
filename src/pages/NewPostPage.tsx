@@ -7,21 +7,34 @@ import RichTextEditor from '../components/RichTextEditor';
 import toast from 'react-hot-toast';
 import { FormData } from '../types/FormData';
 import { createPost } from '../queries/blog';
+import { JSONContent } from '@tiptap/react';
 
 export default function NewPostPage() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState<FormData>({
     title: '',
-    content: null,
+    content: {
+      type: 'doc',
+      content: []
+    },
     status: 'DRAFT',
     type: 'BLOG',
     featuredImage: null,
   });
+
   const [featuredImagePreview, setFeaturedImagePreview] = useState('');
   const [saving, setSaving] = useState(false);
 
+
   const handleFormChange = (field: keyof FormData, value: any) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    if (field === 'content' && value) {
+      setFormData(prev => ({
+        ...prev,
+        content: value as JSONContent
+      }));
+    } else {
+      setFormData(prev => ({ ...prev, [field]: value }));
+    }
   };
 
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -217,6 +230,7 @@ export default function NewPostPage() {
         <div className="prose-lg">
           <RichTextEditor
             onChange={(content) => handleFormChange('content', content)}
+            initialContent={formData.content}
           />
         </div>
       </div>
