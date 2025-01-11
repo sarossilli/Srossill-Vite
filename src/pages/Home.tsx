@@ -1,8 +1,14 @@
 import React from 'react';
 import { ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { record } from 'aws-amplify/analytics';
 
 const Home: React.FC = () => {
+
+  record({
+    name: 'homepageVisit',
+  });
+
   return (
     <div className="max-w-4xl mx-auto px-4 py-16">
       {/* Hero Section */}
@@ -101,7 +107,7 @@ const Home: React.FC = () => {
       {/* Call to Action */}
       <div className="text-center">
         <Link
-          to="/projects"
+          to="/blog"
           className="inline-flex items-center gap-2 bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 transition-colors"
         >
           See more of my work <ArrowRight size={20} />

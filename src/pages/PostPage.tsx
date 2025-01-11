@@ -4,9 +4,12 @@ import { fetchPostById, type ProcessedPost } from '../queries/blog';
 import { ContentRenderer } from '../components/ContentRenderer';
 import { Loader2 } from 'lucide-react';
 import { StorageImage } from '@aws-amplify/ui-react-storage';
+import { record } from 'aws-amplify/analytics';
 
 export default function PostPage() {
   const { id } = useParams();
+
+
 
   const { data, isLoading, error } = useQuery<ProcessedPost>({
     queryKey: ['post', id],
@@ -40,6 +43,12 @@ export default function PostPage() {
 
   const { post, processedContent } = data;
 
+  record({
+    name: 'blogVisit',
+    attributes: { postTitle: post.title, type: post.type },
+  });
+  
+
   return (
     <div className="min-h-screen bg-gray-900">
       <div className="max-w-4xl mx-auto px-4 py-8">
@@ -53,7 +62,7 @@ export default function PostPage() {
               />
             </div>
           )}
-          
+
           <div className="p-6">
             <header className="mb-6">
               <h1 className="text-3xl font-bold text-white mb-2">
@@ -68,7 +77,7 @@ export default function PostPage() {
                     ${post.type === 'BLOG'
                       ? 'bg-blue-100 text-blue-800'
                       : 'bg-purple-100 text-purple-800'
-                  }`}
+                    }`}
                 >
                   {post.type}
                 </span>

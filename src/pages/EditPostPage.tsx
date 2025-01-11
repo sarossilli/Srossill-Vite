@@ -3,7 +3,7 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { fetchPostById, updatePost } from '../queries/blog';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import RichTextEditor from '../components/RichTextEditor';
 import { StorageImage } from '@aws-amplify/ui-react-storage';
 import { Loader2 } from 'lucide-react';
@@ -11,12 +11,14 @@ import type { FormData } from '../types/FormData';
 import toast from 'react-hot-toast';
 import { usePostUpload } from '../hooks/usePostUpload';
 import { uploadData } from 'aws-amplify/storage';
+import { JSONContent } from '@tiptap/react';
 
 export default function EditPostPage() {
     const { id } = useParams();
     const navigate = useNavigate();
     const queryClient = useQueryClient();
     const { handleImageChange } = usePostUpload();
+    const initialLoadDone = useRef(false);
 
     const { data: postData, isLoading } = useQuery({
         queryKey: ['post', id],
@@ -33,25 +35,33 @@ export default function EditPostPage() {
     });
 
     useEffect(() => {
-        if (postData?.post) {
-            let parsedContent = postData.post.content;
-            if (typeof parsedContent === 'string') {
+        if (postData?.post && !initialLoadDone.current) {
+            let parsedContent: JSONContent = {
+                type: 'doc',
+                content: []
+            };
+    
+            const rawContent = postData.post.content;
+            if (typeof rawContent === 'string') {
                 try {
-                    parsedContent = JSON.parse(parsedContent);
+                    parsedContent = JSON.parse(rawContent) as JSONContent;
                 } catch (e) {
                     console.error('Failed to parse content:', e);
                 }
+            } else if (rawContent) {
+                parsedContent = rawContent;
             }
-
-            console.log('Setting initial content:', parsedContent);
-
-            setFormData({
+            
+            setFormData(prev => ({
+                ...prev,
                 title: postData.post.title,
-                content: parsedContent, // Use the parsed content directly
+                content: parsedContent,
                 status: postData.post.status || 'DRAFT',
                 type: postData.post.type || 'BLOG',
                 featuredImage: null,
-            });
+            }));
+            
+            initialLoadDone.current = true;
         }
     }, [postData]);
 

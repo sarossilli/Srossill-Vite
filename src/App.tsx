@@ -21,11 +21,11 @@ const queryClient = new QueryClient({
   },
 });
 
+
 function App() {
   return (
     <BrowserRouter>
       <QueryClientProvider client={queryClient}>
-
         <div className="min-h-screen flex flex-col bg-gray-900 text-gray-100">
           <Header />
           <main className="flex-grow">
@@ -37,7 +37,6 @@ function App() {
               <Route path="/blog" element={<BlogPage />} />
               <Route path="/about" element={<About />} />
               <Route path="/blog/:id" element={<PostPage />} />
-              <Route path="/project/:id" element={<PostPage />} />
               <Route
                 path="/admin/newPost"
                 element={
