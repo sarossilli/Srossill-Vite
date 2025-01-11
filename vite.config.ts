@@ -18,9 +18,10 @@ export default defineConfig({
           'vendor-aws-react': ['@aws-amplify/ui-react', '@aws-amplify/ui-react-storage'],
           'vendor-tanstack': ['@tanstack/react-query', '@tanstack/react-table'],
           
-          // Editor chunks
-          'editor-core': ['@tiptap/react', '@tiptap/starter-kit'],
-          'editor-extensions': [
+          // Combined editor chunk to prevent initialization issues
+          'editor-bundle': [
+            '@tiptap/react',
+            '@tiptap/starter-kit',
             '@tiptap/extension-code-block',
             '@tiptap/extension-image',
             '@tiptap/extension-link',
@@ -33,29 +34,6 @@ export default defineConfig({
             '@tiptap/extension-task-list',
             '@tiptap/extension-text-align',
             '@tiptap/extension-typography'
-          ],
-
-          // Feature chunks
-          'feature-blog': [
-            './src/pages/BlogPage',
-            './src/pages/PostPage',
-            './src/pages/EditPostPage',
-            './src/pages/NewPostPage',
-            './src/queries/blog',
-          ],
-          'feature-admin': ['./src/pages/Admin'],
-          
-          // Component chunks
-          'components-editor': [
-            './src/components/RichTextEditor/index',
-            './src/components/RichTextEditor/EditorToolbar',
-            './src/hooks/useEditorActions',
-            './src/hooks/useEditorConfig'
-          ],
-          'components-core': [
-            './src/components/Header',
-            './src/components/Footer',
-            './src/components/ContentRenderer'
           ],
 
           // Additional vendor dependencies
