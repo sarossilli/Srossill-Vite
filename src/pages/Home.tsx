@@ -1,8 +1,14 @@
 import React from 'react';
 import { ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { record } from 'aws-amplify/analytics';
 
 const Home: React.FC = () => {
+
+  record({
+    name: 'homepageVisit',
+  });
+
   return (
     <div className="max-w-4xl mx-auto px-4 py-16">
       {/* Hero Section */}

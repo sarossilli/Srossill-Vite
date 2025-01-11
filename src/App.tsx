@@ -21,11 +21,11 @@ const queryClient = new QueryClient({
   },
 });
 
+
 function App() {
   return (
     <BrowserRouter>
       <QueryClientProvider client={queryClient}>
-
         <div className="min-h-screen flex flex-col bg-gray-900 text-gray-100">
           <Header />
           <main className="flex-grow">
