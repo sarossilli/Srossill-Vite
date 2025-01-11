@@ -16,7 +16,7 @@ const backend = defineBackend({
 const analyticsStack = backend.createStack('analytics');
 
 // Create a simplified name
-const env = process.env.BRANCH_NAME || 'local';
+const env = process.env.AWS_BRANCH || 'local';
 const appName = `srossill-${env}`
 console.log('Creating Pinpoint app with name:', appName); // Debug output
 
