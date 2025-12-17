@@ -14,5 +14,10 @@ vi.mock('aws-amplify', () => ({
   },
 }));
 
+// Mock the Amplify analytics module
+vi.mock('aws-amplify/analytics', () => ({
+  record: vi.fn(),
+}));
+
 // Mock the outputs import
 vi.mock('../../amplify_outputs.json', () => ({}));
