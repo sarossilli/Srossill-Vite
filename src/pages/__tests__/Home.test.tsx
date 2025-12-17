@@ -35,7 +35,7 @@ describe('Home', () => {
       expect(heading).toBeInTheDocument()
       
       // Testing semantic structure - crucial for accessibility
-      expect(screen.getByText(/I'm a Fullstack engineer currently at Amazon/i))
+      expect(screen.getByText(/I'm a Fullstack engineer currently at Stellar Health/i))
         .toBeInTheDocument()
       
       const readMoreLink = screen.getByRole('link', { 
@@ -83,40 +83,27 @@ describe('Home', () => {
     })
 
     it('showcases projects with proper metadata and links', () => {
-      const projects = [
-        {
-          title: 'Tello Map and Tag drone',
-          links: [{
-            text: /Watch it in action/i,
-            url: 'https://drive.google.com/file/d/19W7M81cVJW0UDy-F6nkbNOwDc1NKwjS5/view'
-          }]
-        },
-        {
-          title: 'Musical Joycons',
-          links: [
-            {
-              text: 'View Code →',
-              url: 'https://github.com/sarossilli/Musical-Joycons'
-            },
-            {
-              text: 'Watch Demo →',
-              url: 'https://youtu.be/Xy1yrnwEdZw?si=XEKPGoSgG6e3RAWS'
-            }
-          ]
-        }
-      ]
+      // Verify project headings exist
+      expect(screen.getByRole('heading', { name: 'Mira' })).toBeInTheDocument()
+      expect(screen.getByRole('heading', { name: 'Tello Map and Tag Drone' })).toBeInTheDocument()
+      expect(screen.getByRole('heading', { name: 'Musical Joycons' })).toBeInTheDocument()
 
-      projects.forEach(({ title, links }) => {
-        const projectHeading = screen.getByRole('heading', { name: title })
-        expect(projectHeading).toBeInTheDocument()
-        
-        links.forEach(({ text, url }) => {
-          const link = screen.getByRole('link', { name: text })
-          expect(link).toHaveAttribute('href', url)
-          expect(link).toHaveAttribute('target', '_blank')
-          expect(link).toHaveAttribute('rel', 'noopener noreferrer')
-        })
-      })
+      // Verify "View Code →" links (there are two: Mira and Musical Joycons)
+      const viewCodeLinks = screen.getAllByRole('link', { name: 'View Code →' })
+      expect(viewCodeLinks).toHaveLength(2)
+      expect(viewCodeLinks[0]).toHaveAttribute('href', 'https://github.com/sarossilli/Mira-Monorepo')
+      expect(viewCodeLinks[1]).toHaveAttribute('href', 'https://github.com/sarossilli/Musical-Joycons')
+
+      // Verify other unique links
+      const droneLink = screen.getByRole('link', { name: /Watch it in action/i })
+      expect(droneLink).toHaveAttribute('href', 'https://drive.google.com/file/d/19W7M81cVJW0UDy-F6nkbNOwDc1NKwjS5/view')
+      expect(droneLink).toHaveAttribute('target', '_blank')
+      expect(droneLink).toHaveAttribute('rel', 'noopener noreferrer')
+
+      const demoLink = screen.getByRole('link', { name: 'Watch Demo →' })
+      expect(demoLink).toHaveAttribute('href', 'https://youtu.be/Xy1yrnwEdZw?si=XEKPGoSgG6e3RAWS')
+      expect(demoLink).toHaveAttribute('target', '_blank')
+      expect(demoLink).toHaveAttribute('rel', 'noopener noreferrer')
     })
   })
 
@@ -125,7 +112,7 @@ describe('Home', () => {
       renderWithRouter(<Home />)
       
       const mainCTA = screen.getByRole('link', { name: /See more of my work/i })
-      expect(mainCTA).toHaveAttribute('href', '/projects')
+      expect(mainCTA).toHaveAttribute('href', '/blog')
       
       // Verify heading hierarchy - crucial for screen readers
       const headings = screen.getAllByRole('heading')

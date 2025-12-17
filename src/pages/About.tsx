@@ -15,12 +15,12 @@ const About: React.FC = () => {
        </div>
        <div>
          <h1 className="text-4xl font-bold text-white mb-6">About Me</h1>
-         <p className="text-gray-300 text-lg leading-relaxed mb-4">
-           Hey! I'm Sam, a software engineer deeply immersed in the art of building distributed systems 
-           that scale. Whether I'm architecting event-driven pipelines 
-           that process millions of delivery events daily at Amazon, or orchestrating my personal drone swarm 
-           project, I'm constantly exploring the delicate balance between system resilience and operational complexity.
-         </p>
+        <p className="text-gray-300 text-lg leading-relaxed mb-4">
+          Hey! I'm Sam, a software engineer deeply immersed in the art of building distributed systems 
+          that scale. Whether I'm building healthcare technology at Stellar Health to help reduce 
+          cost of care, or tinkering with my personal drone projects, I'm constantly exploring 
+          the delicate balance between system resilience and operational complexity.
+        </p>
          <div className="flex gap-4">
            <a
              href="https://linkedin.com/in/sarossilli"
@@ -44,24 +44,24 @@ const About: React.FC = () => {
 
      {/* Content Box */}
      <div className="bg-gray-800 rounded-lg p-8">
-       {/* Professional Work */}
-       <section className="mb-12">
-         <h2 className="text-2xl font-bold text-white mb-4">What I Do</h2>
-         <p className="text-gray-300 text-lg leading-relaxed mb-4">
-           At Amazon, I build tools that help delivery businesses recognize and develop their teams. 
-           Using React, Java, and AWS, we create systems that power management tools for over 300,000 
-           delivery drivers. Our focus is on making life better for both managers and their teams through:
-         </p>
-         <ul className="list-disc list-inside text-gray-300 text-lg leading-relaxed space-y-2 ml-4 mb-4">
-           <li>Recognition and awards systems that celebrate driver achievements</li>
-           <li>Coaching tools that help managers develop their teams</li>
-           <li>Performance tracking that identifies areas for growth and excellence</li>
-         </ul>
-         <p className="text-gray-300 text-lg leading-relaxed">
-           I work across the full stack - from designing intuitive user interfaces with React and TypeScript 
-           to building scalable backend services using Java and AWS technologies like Lambda, ECS, and DynamoDB.
-         </p>
-       </section>
+      {/* Professional Work */}
+      <section className="mb-12">
+        <h2 className="text-2xl font-bold text-white mb-4">What I Do</h2>
+        <p className="text-gray-300 text-lg leading-relaxed mb-4">
+          At Stellar Health, I'm part of the Total Cost of Care team, where we're working to reduce 
+          healthcare costs through micro incentives for providers. Our platform helps align provider 
+          incentives with better patient outcomes, making healthcare more efficient and effective.
+        </p>
+        <ul className="list-disc list-inside text-gray-300 text-lg leading-relaxed space-y-2 ml-4 mb-4">
+          <li>Building systems that create targeted incentives for providers</li>
+          <li>Developing tools that track and optimize total cost of care</li>
+          <li>Creating data-driven solutions to improve healthcare efficiency</li>
+        </ul>
+        <p className="text-gray-300 text-lg leading-relaxed">
+          I work across the full stack - from designing intuitive user interfaces with React and TypeScript 
+          to building scalable backend services using Java and AWS technologies like Lambda, ECS, and DynamoDB.
+        </p>
+      </section>
 
        {/* Personal Projects */}
        <section>

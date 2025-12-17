@@ -24,8 +24,8 @@ const Home: React.FC = () => {
           </div>
           <h1 className="text-5xl font-bold mb-6 text-white text-center">Hey, I'm Sam 👋</h1>
           <p className="text-xl text-gray-300 mb-8 max-w-2xl text-center">
-            I'm a Fullstack engineer currently at Amazon. I find the most rewarding part of my job is making 300,000 delivery drivers' days
-            just a little bit better.
+            I'm a Fullstack engineer currently at Stellar Health. I'm passionate about reducing healthcare costs 
+            through technology, building micro incentive systems that help providers deliver better care.
           </p>
           <Link
             to="/about"
@@ -66,9 +66,24 @@ const Home: React.FC = () => {
         <h2 className="text-2xl font-bold mb-6 text-white">Some Things I've Built</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div className="p-6 bg-gray-800 rounded-lg border border-gray-700">
-            <h3 className="text-xl font-semibold mb-2 text-white">Tello Map and Tag drone</h3>
+            <h3 className="text-xl font-semibold mb-2 text-white">Mira</h3>
             <p className="text-gray-400 mb-4">
-              A fun senior project where I created a 3D mapping system using a cheap tello drone's camera.
+              An LLM-powered journaling app that helps you reflect and grow. Built with React Expo 
+              for mobile, AWS on the backend, and LangChain for intelligent conversations.
+            </p>
+            <a
+              href="https://github.com/sarossilli/Mira-Monorepo"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-400 hover:text-blue-300 transition-colors"
+            >
+              View Code →
+            </a>
+          </div>
+          <div className="p-6 bg-gray-800 rounded-lg border border-gray-700">
+            <h3 className="text-xl font-semibold mb-2 text-white">Tello Map and Tag Drone</h3>
+            <p className="text-gray-400 mb-4">
+              A fun senior project where I created a 3D mapping system using a cheap Tello drone's camera.
               It can detect and tag objects in real-time.
             </p>
             <a href="https://drive.google.com/file/d/19W7M81cVJW0UDy-F6nkbNOwDc1NKwjS5/view" target="_blank"
